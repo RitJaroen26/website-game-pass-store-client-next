@@ -66,7 +66,7 @@ export default function Checkout() {
                 </div>
               </div>
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-4"> 
                 <h2 className="font-headline-md text-slate-200">
                   ROV Account ID: #2948192
                 </h2>
