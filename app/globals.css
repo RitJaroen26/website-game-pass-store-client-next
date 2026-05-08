@@ -18,12 +18,31 @@
   --color-background: #101415;
   --color-on-background: #e0e3e5;
   --color-surface: #101415;
+  --color-inverse-surface: #e0e3e5;
   --color-surface-container-lowest: #0b0f10;
+  --color-surface-container-low: #191c1e;
+  --color-surface-container: #1d2022;
+  --color-surface-container-high: #272a2c;
+  --color-surface-container-highest: #323537;
+  --color-surface-variant: #323537;
+  --color-on-surface: #e0e3e5;
   --color-on-surface-variant: #c1c6d7;
+  --color-outline: #8b90a0;
   --color-primary: #adc7ff;
   --color-primary-container: #4a8eff;
+  --color-primary-fixed: #d8e2ff;
+  --color-on-primary: #002e68;
+  --color-on-primary-container: #00285b;
+  --color-secondary: #bfc3f2;
+  --color-secondary-container: #41466e;
+  --color-on-secondary: #282d53;
+  --color-on-secondary-container: #b1b5e3;
   --color-tertiary: #00dbe7;
   --color-tertiary-container: #00a0a9;
+  --color-on-tertiary: #00363a;
+  --color-on-tertiary-container: #002f32;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
 
   /* === Spacing === */
   --spacing-xs: 8px;
@@ -112,9 +131,84 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.glass-panel {
+  background: rgba(10, 16, 61, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-border {
+  position: relative;
+}
+
+.glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(to right, #007bff, #00dbe7);
+  z-index: -1;
+  opacity: 0.5;
+  filter: blur(8px);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 219, 231, 0.5);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020412;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
 .glow-hover:hover {
   box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
   border-color: rgba(0, 242, 255, 0.5);
+}
+
+.neon-glow:hover {
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line > * {
+  position: relative;
+  z-index: 1;
+}
+
+.scan-line::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 242, 255, 0.08),
+    transparent
+  );
+  animation: scan 3s linear infinite;
 }
 
 .gradient-text {
