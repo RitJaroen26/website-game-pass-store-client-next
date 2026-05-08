@@ -19,16 +19,16 @@ export default function GameCard({ image, game, badge, level, price, title, game
                     <span className="text-sm font-label-bold text-on-surface-variant">{level}</span>
                     <span className="text-tertiary text-lg font-black tracking-tighter">{price}</span>
                 </div>
-                <h4 className="text-body-md font-bold mb-md truncate">{title}</h4>
+                <h4 className="text-white text-body-md font-bold mb-md truncate">{title}</h4>
                 <div className="grid grid-cols-2 gap-xs mb-md">
                     {stats.map((stat, idx) => (
                         <div key={idx} className="bg-white/5 p-2 rounded flex flex-col items-center">
-                            <span className="text-[10px] text-slate-500 uppercase tracking-tighter">{stat.label}</span>
-                            <span className="text-sm font-bold">{stat.value}</span>
+                            <span className="text-[10px] text-[#dfdfdf] uppercase tracking-tighter">{stat.label}</span>
+                            <span className="text-[#dfdfdf] text-sm font-bold">{stat.value}</span>
                         </div>
                     ))}
                 </div>
-                <button className="w-full py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-bold hover:bg-cyan-400 hover:text-slate-950 transition-colors">ดูรายละเอียด</button>
+                <button className="text-white cursor-pointer w-full py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-bold hover:bg-cyan-400 hover:text-slate-950 transition-colors">ดูรายละเอียด</button>
             </div>
         </div>
     );

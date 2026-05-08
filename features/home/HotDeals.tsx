@@ -14,7 +14,7 @@ export default function HotDeals() {
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="flex justify-between items-end mb-lg">
                     <div>
-                        <h2 className="text-headline-lg font-headline-lg mb-xs">HOT DEALS / ไอดีแนะนำ</h2>
+                        <h2 className="text-[#dfdfdf] text-headline-lg font-headline-lg mb-xs">HOT DEALS / ไอดีแนะนำ</h2>
                         <div className="h-1 w-24 bg-cyan-400 rounded-full"></div>
                     </div>
                     <Link href="#" className="text-cyan-400 font-label-bold flex items-center gap-xs hover:underline">
