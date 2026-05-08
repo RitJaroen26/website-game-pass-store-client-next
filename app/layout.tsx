@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,13 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className="dark">
+   //Fix: ย้าย overflow-x-hidden จาก body มาไว้ที่ html แทน
+  // เพราะ overflow-x-hidden บน body ทำให้ flex container คำนวณ width ผิดพลาด
+  // ส่งผลให้ child elements (เช่น h1) มี width = 0px และ layout บีบผิดรูป
+  <html lang="th" className="dark overflow-x-hidden">
       <head>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Inter:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-background text-on-surface font-body overflow-x-hidden">
+     <body className="bg-background text-on-surface font-body">
         <Navbar />
         {children}
         <Footer />

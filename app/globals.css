@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
+
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/container-queries";
+
 
 :root {
   --background: #ffffff;
@@ -119,6 +121,86 @@
   background: linear-gradient(90deg, #4a8eff, #00dbe7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.glass-panel {
+  background: rgba(10, 16, 61, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-button {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  background-color: #0f172a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(0, 242, 255, 0.5);
+  cursor: pointer;
+  font-weight: 700;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    opacity 0.2s;
+}
+
+.glow-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+}
+
+.glow-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.glow-button .loading-glow {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(-225deg, #00f2ff 0%, #2563eb 50%, #00f2ff 100%);
+  filter: blur(15px);
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0.3s;
+}
+
+.glow-button.is-loading .loading-glow {
+  opacity: 0.5;
+  animation: animate-glow 2s linear infinite;
+}
+
+.glow-button span {
+  position: relative;
+  z-index: 10;
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+@keyframes animate-glow {
+  0% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.2) rotate(360deg);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scanning-animation::after {
