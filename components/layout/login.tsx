@@ -56,10 +56,10 @@ export default function Login() {
     const payload = isLoginMode
       ? { email: trimmedEmail, password: trimmedPassword }
       : {
-          email: trimmedEmail,
-          username: trimmedUsername,
-          password: trimmedPassword,
-        };
+        email: trimmedEmail,
+        username: trimmedUsername,
+        password: trimmedPassword,
+      };
 
     try {
       const response = await fetch(apiUrl, {
@@ -105,7 +105,7 @@ export default function Login() {
   };
 
   return (
- <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-x-hidden bg-[#020412] px-4 py-28 text-[#e0e3e5]">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-center bg-[#020412] px-4 py-28 text-[#e0e3e5]">
       <div className="pointer-events-none absolute left-[-10%] top-[-10%] h-96 w-96 rounded-full bg-blue-600/20 blur-[100px]" />
       <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-cyan-400/10 blur-[100px]" />
 
