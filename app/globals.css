@@ -18,12 +18,31 @@
   --color-background: #101415;
   --color-on-background: #e0e3e5;
   --color-surface: #101415;
+  --color-inverse-surface: #e0e3e5;
   --color-surface-container-lowest: #0b0f10;
+  --color-surface-container-low: #191c1e;
+  --color-surface-container: #1d2022;
+  --color-surface-container-high: #272a2c;
+  --color-surface-container-highest: #323537;
+  --color-surface-variant: #323537;
+  --color-on-surface: #e0e3e5;
   --color-on-surface-variant: #c1c6d7;
+  --color-outline: #8b90a0;
   --color-primary: #adc7ff;
   --color-primary-container: #4a8eff;
+  --color-primary-fixed: #d8e2ff;
+  --color-on-primary: #002e68;
+  --color-on-primary-container: #00285b;
+  --color-secondary: #bfc3f2;
+  --color-secondary-container: #41466e;
+  --color-on-secondary: #282d53;
+  --color-on-secondary-container: #b1b5e3;
   --color-tertiary: #00dbe7;
   --color-tertiary-container: #00a0a9;
+  --color-on-tertiary: #00363a;
+  --color-on-tertiary-container: #002f32;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
 
   /* === Spacing === */
   --spacing-xs: 8px;
