@@ -12,15 +12,58 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
-        let isActive = true;
+        // let isActive = true;
 
-        const loadData = async () => {
-            // await Promise.resolve();
+        // const loadData = async () => {
+        //     // await Promise.resolve();
 
+        //     if (typeof window === "undefined") return;
+
+        //     // if (!isActive) return;
+
+        //     setIsClient(true);
+
+        //     const token = localStorage.getItem("token");
+        //     const userStr = localStorage.getItem("user");
+
+        //     if (token) {
+        //         setIsLoggedIn(true);
+
+        //         if (userStr && userStr !== "undefined" && userStr !== "null") {
+        //             try {
+        //                 const user = JSON.parse(userStr);
+        //                 if (user?.username) {
+        //                     setUsername(user.username);
+        //                 } else if (user?.email) {
+        //                     setUsername(user.email.split("@")[0]);
+        //                 }
+        //             } catch {
+        //                 console.warn("ไม่สามารถแปลงข้อมูลผู้ใช้จาก localStorage ได้");
+        //             }
+        //         }
+
+        //         try {
+        //             if (!isActive) return;
+
+        //             const response = await api.get("/wallet");
+
+        //             if (response?.data?.balance !== undefined) {
+        //                 setBalance(
+        //                     parseFloat(response.data.balance).toLocaleString("th-TH", {
+        //                         minimumFractionDigits: 2,
+        //                     })
+        //                 );
+        //             }
+        //         } catch (error) {
+        //             console.error("ไม่สามารถดึงข้อมูลยอดเงินได้:", error);
+        //         }
+        //     }
+        // };
+
+        // loadData();
+
+        const checkAuthStatus = async () => {
             if (typeof window === "undefined") return;
-
-            // if (!isActive) return;
-
             setIsClient(true);
 
             const token = localStorage.getItem("token");
@@ -29,6 +72,7 @@ export default function Navbar() {
             if (token) {
                 setIsLoggedIn(true);
 
+                // 1. จัดการข้อมูล User (ชื่อ/อีเมล)
                 if (userStr && userStr !== "undefined" && userStr !== "null") {
                     try {
                         const user = JSON.parse(userStr);
@@ -42,9 +86,8 @@ export default function Navbar() {
                     }
                 }
 
+                // 2. ดึงข้อมูลกระเป๋าเงินจาก API
                 try {
-                    if (!isActive) return;
-
                     const response = await api.get("/wallet");
 
                     if (response?.data?.balance !== undefined) {
@@ -54,26 +97,26 @@ export default function Navbar() {
                             })
                         );
                     }
-                    // if (response?.data?.balance !== undefined) {
-                    //     const result = await response.json();
-                    //     if (result?.data?.balance !== undefined) {
-                    //         setBalance(
-                    //             parseFloat(result.data.balance).toLocaleString("th-TH", {
-                    //                 minimumFractionDigits: 2,
-                    //             })
-                    //         );
-                    //     }
-                    // }
                 } catch (error) {
                     console.error("ไม่สามารถดึงข้อมูลยอดเงินได้:", error);
                 }
+            } else {
+                // กรณีไม่มี Token (ล็อกเอาท์) ให้เคลียร์ค่ากลับเป็นค่าเริ่มต้น
+                setIsLoggedIn(false);
+                setUsername("Player");
+                setBalance("0.00");
             }
         };
 
-        loadData();
+        checkAuthStatus();
 
+        window.addEventListener("auth-change", checkAuthStatus);
+
+        // return () => {
+        //     isActive = false;
+        // };
         return () => {
-            isActive = false;
+            window.removeEventListener("auth-change", checkAuthStatus);
         };
     }, []); 
 
@@ -83,6 +126,7 @@ export default function Navbar() {
         setIsLoggedIn(false);
         setUsername("Player");
         setBalance("0.00");
+        window.dispatchEvent(new Event("auth-change"));
         window.location.href = "/";
     };
 

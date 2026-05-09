@@ -72,8 +72,9 @@ export default function Login() {
           localStorage.setItem("user", JSON.stringify(response.data.user));
         }
 
+        window.dispatchEvent(new Event("auth-change"));
         router.push("/");
-        router.refresh();
+        // router.refresh();
       } else {
         alert("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีที่คุณเพิ่งสร้าง");
         setIsLoginMode(true);

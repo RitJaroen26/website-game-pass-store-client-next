@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Login from "@/components/layout/login";
+import Login from "@/components/layout/Login";
 
 export const metadata: Metadata = {
   title: "GAMELORD - เข้าสู่ระบบ",
