@@ -10,58 +10,9 @@ export default function Navbar() {
     const [username, setUsername] = useState("Player");
     const [balance, setBalance] = useState("0.00");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [avatar, setAvatar] = useState("https://s.isanook.com/mv/0/ud/29/148323/sanook_6bb414e5ly1h8m9unjhvsj.jpg?ip/resize/w728/q80/jpg");
 
     useEffect(() => {
-        // let isActive = true;
-
-        // const loadData = async () => {
-        //     // await Promise.resolve();
-
-        //     if (typeof window === "undefined") return;
-
-        //     // if (!isActive) return;
-
-        //     setIsClient(true);
-
-        //     const token = localStorage.getItem("token");
-        //     const userStr = localStorage.getItem("user");
-
-        //     if (token) {
-        //         setIsLoggedIn(true);
-
-        //         if (userStr && userStr !== "undefined" && userStr !== "null") {
-        //             try {
-        //                 const user = JSON.parse(userStr);
-        //                 if (user?.username) {
-        //                     setUsername(user.username);
-        //                 } else if (user?.email) {
-        //                     setUsername(user.email.split("@")[0]);
-        //                 }
-        //             } catch {
-        //                 console.warn("ไม่สามารถแปลงข้อมูลผู้ใช้จาก localStorage ได้");
-        //             }
-        //         }
-
-        //         try {
-        //             if (!isActive) return;
-
-        //             const response = await api.get("/wallet");
-
-        //             if (response?.data?.balance !== undefined) {
-        //                 setBalance(
-        //                     parseFloat(response.data.balance).toLocaleString("th-TH", {
-        //                         minimumFractionDigits: 2,
-        //                     })
-        //                 );
-        //             }
-        //         } catch (error) {
-        //             console.error("ไม่สามารถดึงข้อมูลยอดเงินได้:", error);
-        //         }
-        //     }
-        // };
-
-        // loadData();
-
         const checkAuthStatus = async () => {
             if (typeof window === "undefined") return;
             setIsClient(true);
@@ -72,7 +23,6 @@ export default function Navbar() {
             if (token) {
                 setIsLoggedIn(true);
 
-                // 1. จัดการข้อมูล User (ชื่อ/อีเมล)
                 if (userStr && userStr !== "undefined" && userStr !== "null") {
                     try {
                         const user = JSON.parse(userStr);
@@ -86,7 +36,6 @@ export default function Navbar() {
                     }
                 }
 
-                // 2. ดึงข้อมูลกระเป๋าเงินจาก API
                 try {
                     const response = await api.get("/wallet");
 
@@ -101,7 +50,6 @@ export default function Navbar() {
                     console.error("ไม่สามารถดึงข้อมูลยอดเงินได้:", error);
                 }
             } else {
-                // กรณีไม่มี Token (ล็อกเอาท์) ให้เคลียร์ค่ากลับเป็นค่าเริ่มต้น
                 setIsLoggedIn(false);
                 setUsername("Player");
                 setBalance("0.00");
@@ -112,9 +60,6 @@ export default function Navbar() {
 
         window.addEventListener("auth-change", checkAuthStatus);
 
-        // return () => {
-        //     isActive = false;
-        // };
         return () => {
             window.removeEventListener("auth-change", checkAuthStatus);
         };
@@ -196,9 +141,10 @@ export default function Navbar() {
                                         <p className="text-tertiary text-xs">Member</p>
                                     </div>
                                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0a0f1c] border-2 border-tertiary flex items-center justify-center overflow-hidden hover:shadow-[0_0_15px_rgba(0,242,255,0.4)] transition-all">
-                                        <span className="material-symbols-outlined text-tertiary text-[18px] sm:text-[24px]">
+                                        {/* <span className="material-symbols-outlined text-tertiary text-[18px] sm:text-[24px]">
                                             sports_esports
-                                        </span>
+                                        </span> */}
+                                        <img src={avatar} alt="" />
                                     </div>
                                 </div>
 

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/libs/api";
+import { useUser } from "@/hooks/useUser";
+import { useProfileData } from "@/hooks/useProfileData";
 
 type StoredUser = {
   username?: string;
@@ -27,125 +29,9 @@ type Transaction = {
   amount: string | number;
 };
 
-const transactions = [
-  {
-    id: "#GL-8832",
-    game: "Cyber Hunter Elite",
-    date: "24 Oct, 2023",
-    status: "Completed",
-    amount: "4,500 ฿",
-    statusClass:
-      "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
-  },
-  {
-    id: "#GL-8831",
-    game: "Neon Drifter Pack",
-    date: "22 Oct, 2023",
-    status: "Processing",
-    amount: "1,250 ฿",
-    statusClass: "border-[#007BFF]/20 bg-[#007BFF]/10 text-[#007BFF]",
-  },
-  {
-    id: "#GL-8829",
-    game: "Void Walker Skin",
-    date: "18 Oct, 2023",
-    status: "Completed",
-    amount: "8,900 ฿",
-    statusClass:
-      "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
-  },
-];
-
 export default function Profile() {
-  const [profileName, setProfileName] = useState("Player");
-  const [profileEmail, setProfileEmail] = useState("loading...");
-  const [displayId, setDisplayId] = useState("GL-XXXXXX"); // ⭐ State สำหรับ Display ID
-  const [tier, setTier] = useState("MEMBER"); // ⭐ State สำหรับ Tier
-  const [balance, setBalance] = useState("0.00");
-  const [avatar, setAvatar] = useState("https://s.isanook.com/mv/0/ud/29/148323/sanook_6bb414e5ly1h8m9unjhvsj.jpg?ip/resize/w728/q80/jpg");
-
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
-  const [stats, setStats] = useState({
-    totalOrders: 0,
-    totalTopUps: 0,
-    rewardPoints: 0
-  });
-
-  useEffect(() => {
-    let isActive = true;
-
-    const loadProfile = async () => {
-      if (typeof window === "undefined") return;
-
-      // await Promise.resolve();
-
-      // if (!isActive) return;
-
-      const token = localStorage.getItem("token");
-      const userStr = localStorage.getItem("user");
-
-      if (!token || !userStr) {
-        window.location.href = '/login';
-        return;
-      }
-
-      try {
-        const user = JSON.parse(userStr) as StoredUser;
-        setProfileName(user.username || user.email?.split("@")[0] || "Player");
-        setProfileEmail(user.email || "ไม่พบอีเมล");
-        setDisplayId(user.displayId || `GL-${Math.floor(100000 + Math.random() * 900000)}`);
-        setTier(user.tier || "MEMBER");
-        if (user.avatarUrl) setAvatar(user.avatarUrl);
-
-      } catch (error) {
-        console.error("Failed to parse user data", error);
-        return;
-      }
-
-      const [walletResult, ordersResult, statsResult] = await Promise.allSettled([
-        api.get("/wallet"),
-        api.get("/orders/my-orders"),
-        api.get("/orders/stats")
-      ]);
-
-      if (!isActive) return;
-
-      if (statsResult.status === "fulfilled") {
-        setStats(statsResult.value.data);
-      }
-
-      if (walletResult.status === "fulfilled") {
-        const response = walletResult.value as WalletResponse;
-        if (response.data?.balance !== undefined) {
-          setBalance(
-            Number(response.data.balance).toLocaleString("th-TH", {
-              minimumFractionDigits: 2,
-            })
-          );
-        }
-      } else {
-        console.error("ไม่สามารถดึงข้อมูลยอดเงินได้:", walletResult.reason);
-      }
-
-      if (ordersResult.status === "fulfilled") {
-        const response = ordersResult.value as { data: Transaction[] };
-        if (response.data) {
-          setTransactions(response.data);
-        }
-      } else {
-        console.error("ไม่สามารถดึงประวัติการสั่งซื้อได้:", ordersResult.reason);
-      }
-
-      setIsLoadingHistory(false);
-    };
-
-    loadProfile();
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
+  const { profileName, profileEmail, displayId, tier, avatar, isMounted } = useUser();
+  const { balance, transactions, stats, isLoading } = useProfileData();
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -159,6 +45,14 @@ export default function Profile() {
         return "border-slate-500/20 bg-slate-500/10 text-slate-400";
     }
   };
+
+  if (!isMounted) {
+    return (
+      <main className="relative z-10 mx-auto w-full max-w-[1280px] flex-grow px-4 pb-16 pt-28 text-[#e0e3e5] md:px-8">
+        <div className="pt-28 text-center text-white">Loading Profile...</div>
+      </main>
+    );
+  }
 
   return (
     <main className="relative z-10 mx-auto w-full max-w-[1280px] flex-grow px-4 pb-16 pt-28 text-[#e0e3e5] md:px-8">
@@ -278,7 +172,7 @@ export default function Profile() {
                 </tr>
               </thead>
               <tbody className="text-sm font-body-md">
-                {isLoadingHistory ? (
+                {isLoading ? (
                   <tr>
                     <td colSpan={5} className="py-8 text-center text-slate-500">
                       กำลังโหลดประวัติการสั่งซื้อ...
