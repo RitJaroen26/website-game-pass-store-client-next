@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import api from "@/libs/api";
 
 type AuthResponse = {
   data?: {
@@ -30,7 +31,7 @@ export default function Login() {
     resetForm();
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const trimmedEmail = email.trim();
@@ -49,9 +50,7 @@ export default function Login() {
 
     setIsLoading(true);
 
-    const apiUrl = isLoginMode
-      ? "http://localhost:4000/api/auth/login"
-      : "http://localhost:4000/api/auth/register";
+    const apiUrl = isLoginMode ? "/auth/login" : "/auth/register";
 
     const payload = isLoginMode
       ? { email: trimmedEmail, password: trimmedPassword }
@@ -62,43 +61,35 @@ export default function Login() {
       };
 
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = (await api.post(apiUrl, payload)) as AuthResponse;
 
-      const result = (await response.json()) as AuthResponse;
-
-      if (response.ok) {
-        if (isLoginMode) {
-          if (result.data?.token) {
-            localStorage.setItem("token", result.data.token);
-          }
-
-          if (result.data?.user) {
-            localStorage.setItem("user", JSON.stringify(result.data.user));
-          }
-
-          router.push("/");
-          router.refresh();
-        } else {
-          alert(
-            "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีที่คุณเพิ่งสร้าง",
-          );
-          setIsLoginMode(true);
-          resetForm();
+      if (isLoginMode) {
+        if (response.data?.token) {
+          localStorage.setItem("token", response.data.token);
         }
+
+        if (response.data?.user) {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+        }
+
+        router.push("/");
+        router.refresh();
       } else {
-        alert(`ข้อผิดพลาด: ${result.message || "เกิดข้อผิดพลาดบางอย่าง"}`);
+        alert("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีที่คุณเพิ่งสร้าง");
+        setIsLoginMode(true);
+        resetForm();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("API Error:", error);
-      alert(
-        "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่าเปิด Backend แล้วหรือยัง",
-      );
+      
+      let errorMessage = "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "object" && error !== null && "message" in error) {
+        errorMessage = String((error as Record<string, unknown>).message);
+      }
+
+      alert(`ข้อผิดพลาด: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }

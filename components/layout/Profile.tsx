@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import api from "@/libs/api";
 
 type StoredUser = {
   username?: string;
@@ -14,7 +15,7 @@ type WalletResponse = {
   };
 };
 
-// API TODO: Replace this mock list with the user's real order history endpoint.
+
 const transactions = [
   {
     id: "#GL-8832",
@@ -45,7 +46,6 @@ const transactions = [
 ];
 
 export default function Profile() {
-  // Temporary defaults let the profile page render while auth/API wiring is in progress.
   const [profileName, setProfileName] = useState("Pond Pawarit");
   const [profileEmail, setProfileEmail] = useState("loading...");
   const [balance, setBalance] = useState("0.00");
@@ -54,6 +54,8 @@ export default function Profile() {
     let isActive = true;
 
     const loadProfile = async () => {
+      if (typeof window === "undefined") return;
+
       await Promise.resolve();
 
       if (!isActive) return;
@@ -62,40 +64,25 @@ export default function Profile() {
       const userStr = localStorage.getItem("user");
 
       if (!token || !userStr) {
-        // AUTH TODO: This guard is disabled for UI testing.
-        // When auth is ready, redirect to /Login here instead of returning.
-        // TODO(auth): เปิด redirect กลับไป /Login ตรงนี้เมื่อพร้อมบังคับ login หน้าโปรไฟล์
+        window.location.href = '/login';
         return;
       }
 
       try {
-        // Current profile source is localStorage written by the login flow.
-        // API TODO: Replace this with a fresh /me or /profile request if backend provides one.
         const user = JSON.parse(userStr) as StoredUser;
         setProfileName(user.username || user.email?.split("@")[0] || "Player");
         setProfileEmail(user.email || "ไม่พบอีเมล");
       } catch (error) {
         console.error("Failed to parse user data", error);
-        // AUTH TODO: When auth is enforced, clear bad localStorage and redirect to /Login here.
-        // TODO(auth): เปิด redirect กลับไป /Login ตรงนี้เมื่อข้อมูล user ใน localStorage ใช้งานไม่ได้
         return;
       }
 
       try {
-        // Wallet is already wired to backend; keep this response shape in sync with the API.
-        const response = await fetch("http://localhost:4000/api/wallet", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = (await api.get("/wallet")) as WalletResponse;
 
-        if (!response.ok) return;
-
-        const result = (await response.json()) as WalletResponse;
-        if (result.data?.balance !== undefined) {
+        if (response.data?.balance !== undefined) {
           setBalance(
-            Number(result.data.balance).toLocaleString("th-TH", {
+            Number(response.data.balance).toLocaleString("th-TH", {
               minimumFractionDigits: 2,
             }),
           );
@@ -114,13 +101,11 @@ export default function Profile() {
 
   return (
     <main className="relative z-10 mx-auto w-full max-w-[1280px] flex-grow px-4 pb-16 pt-28 text-[#e0e3e5] md:px-8">
-      {/* Decorative background only; no data/API logic here. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute right-[-5%] top-[-10%] h-[600px] w-[600px] rounded-full bg-[#007BFF] opacity-20 mix-blend-screen blur-[150px]" />
         <div className="absolute bottom-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-[#00dbe7] opacity-10 mix-blend-screen blur-[150px]" />
       </div>
 
-      {/* Profile header: avatar, user info, and wallet balance. */}
       <header className="glass-panel relative z-10 mb-8 flex flex-col items-center gap-6 overflow-hidden rounded-2xl p-6 md:flex-row md:gap-8 md:p-8">
         <div className="glow-border relative shrink-0 rounded-full">
           <img
@@ -160,7 +145,6 @@ export default function Profile() {
         </div>
       </header>
 
-      {/* API TODO: Replace hard-coded stat values with backend summary metrics. */}
       <section className="relative z-10 mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
         <SummaryCard
           icon="shopping_cart"
@@ -196,7 +180,6 @@ export default function Profile() {
       </section>
 
       <section className="relative z-10 grid grid-cols-1 gap-8 xl:grid-cols-3">
-        {/* API TODO: Table currently renders mock transactions from the constant above. */}
         <div className="glass-panel rounded-xl p-6 xl:col-span-2">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
